@@ -8,7 +8,7 @@ A Neovim plugin that enables Fibonacci-based window splitting, inspired by tilin
 ## Installation
 
 ### lazy.nvim
-\```lua
+```lua
 {
   "username/FibSplit.nvim",
   config = function()
@@ -18,10 +18,10 @@ A Neovim plugin that enables Fibonacci-based window splitting, inspired by tilin
     }
   end,
 }
-\```
+```
 
 ### packer.nvim
-\```lua
+```lua
 use {
   "username/FibSplit.nvim",
   config = function()
@@ -31,13 +31,13 @@ use {
     }
   end,
 }
-\```
+```
 ## Usage
 
 ### Commands
 
 - `:FibSplit`: Adds a new buffer (or opens a file if provided) in the first window, shifts buffers down, and splits the last window horizontally.
   - Usage:
-    \`:FibSplit\`
-    \`:FibSplit path/to/file\`
+    `:FibSplit`
+    `:FibSplit path/to/file`
 
