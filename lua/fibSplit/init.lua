@@ -10,6 +10,7 @@ vim.api.nvim_create_user_command("Fibsplit", function(opts)
 end, {
 	nargs = "?",
 	desc = "Fibonacci Split: Splits the current window and optionally opens a file",
+	complete = "file",
 })
 
 return M
