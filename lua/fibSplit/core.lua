@@ -68,28 +68,49 @@ end
 
 function M.fibPop()
 	local normal_wins = get_normal_windows()
-
 	if #normal_wins == 0 then
 		vim.notify("No normal windows found!", vim.log.levels.ERROR)
 		return
 	end
 
+	-- Save the original buffers for each window
 	local old_bufs = {}
 	for i, w in ipairs(normal_wins) do
 		old_bufs[i] = vim.api.nvim_win_get_buf(w)
 	end
+
 	local current_buf = vim.api.nvim_get_current_buf()
 	local current_win = vim.api.nvim_get_current_win()
 
-	local i = 2
-
-	while normal_wins[i] and current_win ~= normal_wins[i] do
-		vim.api.nvim_win_set_buf(normal_wins[i], old_bufs[i - 1])
-		i = i + 1
+	-- Find the index of the current window in normal_wins
+	local current_index
+	for i, w in ipairs(normal_wins) do
+		if w == current_win then
+			current_index = i
+			break
+		end
+	end
+	-- If somehow not found, bail
+	if not current_index then
+		vim.notify("Current window not found in normal windows", vim.log.levels.ERROR)
+		return
 	end
 
+	----------------------------------------------------------------
+	-- The "rotation" logic:
+	-- For i from current_index down to 2:
+	--   window[i] gets buffer from old_bufs[i-1]
+	-- Finally, window[1] gets the current_buf.
+	----------------------------------------------------------------
+	for i = current_index, 2, -1 do
+		vim.api.nvim_win_set_buf(normal_wins[i], old_bufs[i - 1])
+	end
+
+	-- Window #1 gets the current buffer
 	vim.api.nvim_win_set_buf(normal_wins[1], current_buf)
-	-- Ensure the new buffer is the current buffer
+
+	-- Optionally, move the cursor to the window that now contains the current buffer
 	vim.api.nvim_set_current_win(normal_wins[1])
 end
+
 return M
