@@ -66,4 +66,30 @@ function M.fibsplit(file_path)
 	}
 end
 
+function M.fibPop()
+	local normal_wins = get_normal_windows()
+
+	if #normal_wins == 0 then
+		vim.notify("No normal windows found!", vim.log.levels.ERROR)
+		return
+	end
+
+	local old_bufs = {}
+	for i, w in ipairs(normal_wins) do
+		old_bufs[i] = vim.api.nvim_win_get_buf(w)
+	end
+	local current_buf = vim.api.nvim_get_current_buf()
+	local current_win = vim.api.nvim_get_current_win()
+
+	local i = 1
+
+	while normal_wins[i] and current_win ~= normal_wins[i] do
+		vim.api.nvim_win_set_buf(normal_wins[i], old_bufs[i - 1])
+		i = i + 1
+	end
+
+	vim.api.nvim_win_set_buf(normal_wins[1], current_buf)
+	-- Ensure the new buffer is the current buffer
+	vim.api.nvim_set_current_win(normal_wins[1])
+end
 return M
