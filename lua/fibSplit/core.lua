@@ -81,7 +81,7 @@ function M.fibPop()
 	local current_buf = vim.api.nvim_get_current_buf()
 	local current_win = vim.api.nvim_get_current_win()
 
-	local i = 1
+	local i = 2
 
 	while normal_wins[i] and current_win ~= normal_wins[i] do
 		vim.api.nvim_win_set_buf(normal_wins[i], old_bufs[i - 1])
