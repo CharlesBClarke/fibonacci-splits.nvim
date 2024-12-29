@@ -1,20 +1,5 @@
 local M = {}
 
-local function half_split(vertical)
-	local current_win = vim.api.nvim_get_current_win()
-	if vertical then
-		local current_width = vim.api.nvim_win_get_width(current_win)
-		local new_width = math.floor(current_width * 0.5)
-
-		vim.cmd(new_width .. "vsplit")
-	else
-		local current_height = vim.api.nvim_win_get_height(current_win)
-		local new_height = math.floor(current_height * 0.5)
-
-		vim.cmd(new_height .. "split")
-	end
-end
-
 local function get_normal_windows()
 	local normal_wins = {}
 	for _, win_id in ipairs(vim.api.nvim_list_wins()) do
@@ -28,6 +13,8 @@ end
 
 function M.fibsplit(file_path)
 	local normal_wins = get_normal_windows()
+
+	vim.cmd("set noequalalways")
 	if #normal_wins == 0 then
 		vim.notify("No normal windows found!", vim.log.levels.ERROR)
 		return
@@ -60,9 +47,9 @@ function M.fibsplit(file_path)
 	vim.api.nvim_set_current_win(last_win)
 
 	if #normal_wins % 2 == 0 then
-		half_split(false)
+		vim.api.nvim_command("split")
 	else
-		half_split(true)
+		vim.api.nvim_command("vsplit")
 	end
 
 	local new_split_win = vim.api.nvim_get_current_win()
