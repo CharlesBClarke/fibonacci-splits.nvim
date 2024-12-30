@@ -2,27 +2,25 @@ local M = {}
 
 local function get_normal_windows()
 	local normal_wins = {}
+	local old_bufs = {}
 	for _, win_id in ipairs(vim.api.nvim_list_wins()) do
 		local conf = vim.api.nvim_win_get_config(win_id)
 		if conf.relative == "" then
 			table.insert(normal_wins, win_id)
+			local buffer_id = vim.api.nvim_win_get_buf(win_id)
+			table.insert(old_bufs, buffer_id)
 		end
 	end
-	return normal_wins
+	return normal_wins, old_bufs
 end
 
 function M.fibsplit(file_path)
-	local normal_wins = get_normal_windows()
+	local normal_wins, old_bufs = get_normal_windows()
 
 	vim.cmd("set noequalalways")
 	if #normal_wins == 0 then
 		vim.notify("No normal windows found!", vim.log.levels.ERROR)
 		return
-	end
-
-	local old_bufs = {}
-	for i, w in ipairs(normal_wins) do
-		old_bufs[i] = vim.api.nvim_win_get_buf(w)
 	end
 
 	local new_buf
@@ -67,16 +65,10 @@ function M.fibsplit(file_path)
 end
 
 function M.fibPop()
-	local normal_wins = get_normal_windows()
+	local normal_wins, old_bufs = get_normal_windows()
 	if #normal_wins == 0 then
 		vim.notify("No normal windows found!", vim.log.levels.ERROR)
 		return
-	end
-
-	-- Save the original buffers for each window
-	local old_bufs = {}
-	for i, w in ipairs(normal_wins) do
-		old_bufs[i] = vim.api.nvim_win_get_buf(w)
 	end
 
 	local current_buf = vim.api.nvim_get_current_buf()
